@@ -2,5 +2,11 @@ shamir
 
 shamir's secret sharing
 
+notes:
+  - secret split into multiple parts called shares
+  - threshold = number of shares needed to reconstruct secret
+  - divide secret into n shares, where k is the threshold
+  - k points ensough to unqiuely determine a polynomial of degree <= k-1
+
 resources:
   - https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing
