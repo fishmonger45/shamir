@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"math"
 	"math/big"
 	"math/rand"
@@ -10,6 +11,8 @@ import (
 var (
 	ErrInvalidShareCount = errors.New("invalid share count")
 	ErrRequiredTotal     = errors.New("total shares must be greater than the required")
+	ErrDuplicateShare    = errors.New("share was duplicate")
+	ErrNumberShares      = errors.New("require more than two shares")
 )
 
 type Share struct {
@@ -75,4 +78,21 @@ func Split(secret *big.Int, polynomial *Polynomial, required int) ([]Share, erro
 	}
 
 	return ss, nil
+}
+
+// Join shares into a secret
+func Join(shares []Share) (*big.Int, error) {
+	if len(shares) < 2 {
+		return nil, ErrNumberShares
+	}
+	// Check duplicates
+	hm := make(map[int64]struct{})
+	for _, s := range shares {
+		if _, ok := hm[s.Part.Int64()]; ok {
+			return nil, fmt.Errorf("%s: %v", ErrDuplicateShare, s.Part)
+		}
+		hm[s.Part.Int64()] = struct{}{}
+	}
+
+	return nil, nil
 }
